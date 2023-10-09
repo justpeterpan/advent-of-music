@@ -1,5 +1,5 @@
 <template>
   <div>
-    <NuxtWelcome />
+    Calendar App
   </div>
 </template>
