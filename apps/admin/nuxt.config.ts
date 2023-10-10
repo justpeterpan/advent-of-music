@@ -2,10 +2,6 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ['@nuxtjs/supabase'],
-  experimental: {
-    headNext: true,
-    typedPages: true,
-  },
   runtimeConfig: {
     spotify: {
       clientId: process.env.SPOTIFY_CLIENT_ID,
@@ -16,5 +12,8 @@ export default defineNuxtConfig({
       key: process.env.SUPABASE_KEY,
       url: process.env.SUPABASE_URL,
     },
+  },
+  supabase: {
+    redirect: false,
   },
 })

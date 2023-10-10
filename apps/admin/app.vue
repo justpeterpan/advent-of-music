@@ -4,17 +4,13 @@ const loading = ref(false)
 const playlistItems = ref()
 
 async function submitPlaylistId() {
-  const {
-    data: tracks,
-    status,
-    error,
-  } = await useFetch('/auth', {
+  const { data: tracks, status } = await useFetch('/playlist', {
     method: 'post',
     body: {
       spotifyPlaylistId: playlistId.value,
     },
   })
-  loading.value = status.value === 'success' ? false : true
+  loading.value = status.value !== 'success'
   playlistItems.value = tracks.value
 }
 </script>
@@ -35,6 +31,7 @@ async function submitPlaylistId() {
           {{ item.track.name }}
         </li>
       </ul>
+      <span>http://localhost:3000/cals/{{ playlistId }}</span>
     </div>
   </div>
 </template>
