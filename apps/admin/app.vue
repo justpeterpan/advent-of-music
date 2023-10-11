@@ -4,17 +4,46 @@ const error = ref(false)
 const loading = ref(false)
 const playlistItems = ref()
 
+function extractSpotifyPlaylistId(input: string): string | null {
+  const idPattern = /^[0-9A-Za-z]{22}$/
+  if (idPattern.test(input)) {
+    return input
+  }
+
+  const urlPattern = /https:\/\/open\.spotify\.com\/playlist\/([0-9A-Za-z]{22})/
+  const match = urlPattern.exec(input)
+  if (match?.[1]) {
+    return match[1]
+  }
+
+  return null
+}
+
 async function submitPlaylistId() {
+  const validPlaylistId = extractSpotifyPlaylistId(playlistId.value)
+
+  if (!validPlaylistId) {
+    error.value = true
+    return
+  }
+
   const { data: tracks, status } = await useFetch('/playlist', {
     method: 'post',
     body: {
-      spotifyPlaylistId: playlistId.value,
+      spotifyPlaylistId: validPlaylistId,
     },
   })
+  playlistId.value = validPlaylistId
   error.value = status.value === 'error'
   loading.value = status.value !== 'success'
   playlistItems.value = tracks.value
 }
+
+watch(playlistId, (newValue) => {
+  if (playlistId.value === '') {
+    error.value = false
+  }
+})
 </script>
 
 <template>
@@ -23,7 +52,7 @@ async function submitPlaylistId() {
       <form
         @submit.prevent="submitPlaylistId"
         method="post"
-        class="grid grid-cols-1 mb-1"
+        class="grid grid-cols-1 mb-1 w-[32rem] max-w-lg"
       >
         <label for="playlist-id" class="text-xs font-extralight"
           >Playlist Id</label
@@ -34,12 +63,13 @@ async function submitPlaylistId() {
           v-model="playlistId"
           required
           class="rounded-md p-2 my-2 border-2 border-black shadow-black ring-2 ring-white text-black"
-          :class="{ 'ring-red-500': error }"
+          :class="{ 'ring-rose-500': error }"
         />
         <button
           type="submit"
           :disabled="!playlistId"
-          class="text-left border-2 rounded-md p-2 hover:bg-white hover:text-black hover:transition-colors hover:duration-500"
+          v-show="playlistId"
+          class="text-left border-2 rounded-md p-2 hover:bg-white hover:text-black hover:transition-all hover:duration-500"
           :class="{
             'pointer-events-none text-gray-800 border-gray-800': !playlistId,
           }"
@@ -48,18 +78,17 @@ async function submitPlaylistId() {
         </button>
       </form>
       <div>
-        <div v-if="error" class="text-red-500">something went wrong</div>
+        <div v-if="error" class="text-rose-500">
+          <span v-if="!playlistId"
+            >Please provide a Spotify playlist ID or URL.</span
+          >
+          <span v-else>Something went wrong.</span>
+        </div>
         <div v-else-if="loading">working</div>
         <div v-else-if="!loading && playlistItems?.length">
           finished
-          <ul>
-            <li v-for="item of playlistItems" :key="item.track.id">
-              {{ item.track.id }} ---- {{ item.track.artists }} ----
-              {{ item.track.name }}
-            </li>
-          </ul>
           <NuxtLink :to="`http://localhost:3000/cals/${playlistId}`"
-            >Calendar</NuxtLink
+            >link to your calendar</NuxtLink
           >
         </div>
       </div>
