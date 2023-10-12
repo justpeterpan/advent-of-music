@@ -97,11 +97,13 @@ export default defineEventHandler(async (event) => {
     .select()
 
   if (calendarsResponse.status === 201) {
-    const transformedCalendarTrackData = response.tracks?.map((track) => ({
-      spotifyTrackID: track.track.id,
-      calendarID: calendarsResponse.data?.[0].calendarID || 0,
-    }))
-    const transformedTrackData = response.tracks?.map((track) => ({
+    const transformedCalendarTrackData = response.tracks
+      ?.slice(0, 24)
+      .map((track) => ({
+        spotifyTrackID: track.track.id,
+        calendarID: calendarsResponse.data?.[0].calendarID || 0,
+      }))
+    const transformedTrackData = response.tracks?.slice(0, 24).map((track) => ({
       spotifyTrackID: track.track.id,
       trackName: track.track.name,
       artistName: track.track.artists.map((artist) => artist.name),
