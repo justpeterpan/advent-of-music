@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const playlistId = ref('https://spotify.link/Hi39VPXYPDb')
+const playlistId = ref('')
 const error = ref(false)
 const loading = ref(false)
 const playlistItems = ref()
