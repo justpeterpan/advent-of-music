@@ -9,6 +9,28 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      "calendar-tracks": {
+        Row: {
+          calendarID: number
+          spotifyTrackID: string
+        }
+        Insert: {
+          calendarID: number
+          spotifyTrackID: string
+        }
+        Update: {
+          calendarID?: number
+          spotifyTrackID?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "calendar-tracks_calendarID_fkey"
+            columns: ["calendarID"]
+            referencedRelation: "calendars"
+            referencedColumns: ["calendarID"]
+          }
+        ]
+      }
       calendars: {
         Row: {
           calendarID: number
@@ -30,28 +52,28 @@ export interface Database {
       tracks: {
         Row: {
           artistName: string[] | null
-          calendarID: number
+          coverUrls: string[] | null
           spotifyTrackID: string
           trackName: string | null
         }
         Insert: {
           artistName?: string[] | null
-          calendarID: number
+          coverUrls?: string[] | null
           spotifyTrackID: string
           trackName?: string | null
         }
         Update: {
           artistName?: string[] | null
-          calendarID?: number
+          coverUrls?: string[] | null
           spotifyTrackID?: string
           trackName?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "tracks_calendarID_fkey"
-            columns: ["calendarID"]
-            referencedRelation: "calendars"
-            referencedColumns: ["calendarID"]
+            foreignKeyName: "tracks_spotifyTrackID_fkey"
+            columns: ["spotifyTrackID"]
+            referencedRelation: "calendar-tracks"
+            referencedColumns: ["spotifyTrackID"]
           }
         ]
       }

@@ -86,8 +86,9 @@ watch(playlistId, (newValue) => {
         </div>
         <div v-else-if="loading">working</div>
         <div v-else-if="!loading && playlistItems?.length">
-          finished
-          <NuxtLink :to="`http://localhost:3000/cals/${playlistId}`"
+          <div>done...</div>
+          <NuxtLink
+            :to="`https://advent-of-music-calendar.vercel.app/cals/${playlistId}`"
             >link to your calendar</NuxtLink
           >
         </div>

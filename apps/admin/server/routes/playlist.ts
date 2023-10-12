@@ -11,6 +11,15 @@ const ReponseSchema = v.object({
           id: v.string(),
           artists: v.array(v.object({ name: v.string(), id: v.string() })),
           name: v.string(),
+          album: v.object({
+            images: v.array(
+              v.object({
+                url: v.string(),
+                height: v.number(),
+                width: v.number(),
+              })
+            ),
+          }),
         }),
       })
     ),
@@ -50,30 +59,36 @@ export default defineEventHandler(async (event) => {
       method: 'GET',
       query: {
         market: 'DE',
-        fields: 'tracks.items(track(id, artists, name))',
+        fields: 'tracks.items(track(id, artists, name, album.images))',
       },
     }
   )
 
   const tracks = ReponseSchema._parse(playlistResponse).output?.tracks.items
-
   const calendarsResponse = await supabaseClient
     .from('calendars')
     .upsert({ name: body.spotifyPlaylistId, slug: body.spotifyPlaylistId })
     .select()
 
   if (calendarsResponse.status === 201) {
-    const transformedData = tracks?.map((track) => ({
+    tracks?.forEach((track) => console.log(track))
+    const transformedCalendarTrackData = tracks?.map((track) => ({
       spotifyTrackID: track.track.id,
       calendarID: calendarsResponse.data?.[0].calendarID || 0,
+    }))
+    const transformedTrackData = tracks?.map((track) => ({
+      spotifyTrackID: track.track.id,
       trackName: track.track.name,
       artistName: track.track.artists.map((artist) => artist.name),
+      coverUrls: track.track.album.images.map((image) => image.url),
     }))
-    if (transformedData)
-      await supabaseClient.from('tracks').insert(transformedData)
+    if (transformedCalendarTrackData && transformedTrackData) {
+      await supabaseClient
+        .from('calendar-tracks')
+        .insert(transformedCalendarTrackData)
+      await supabaseClient.from('tracks').insert(transformedTrackData)
+    }
   }
-
-  console.log('calendarsResponse', calendarsResponse)
 
   return tracks
 })
