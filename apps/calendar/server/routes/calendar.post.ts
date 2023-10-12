@@ -1,4 +1,5 @@
 import * as v from 'valibot'
+import { Temporal } from '@js-temporal/polyfill'
 import { serverSupabaseClient } from '#supabase/server'
 import { Database } from '../../../../supabase'
 
@@ -13,6 +14,15 @@ const ReponseSchema = v.array(
 
 export default defineEventHandler(async () => {
   const event = useEvent()
+  const dayOfMonth = Temporal.Now.plainDateISO().day
+  const placeholdersNeeded = 24 - dayOfMonth
+  const placeholderItem = {
+    spotifyTrackID: 'placeholder',
+    trackName: '',
+    artistName: [''],
+    coverUrls: ['placeholder'],
+  }
+  const placeholderItems = Array(placeholdersNeeded).fill(placeholderItem)
   const supabaseClient = await serverSupabaseClient<Database>(event)
   const { slug } = await readBody(event)
   const { data: calendarId, error: calendarIdError } = await supabaseClient
@@ -29,6 +39,9 @@ export default defineEventHandler(async () => {
     .eq('calendarID', calendarId[0].calendarID)
   if (error?.code || !calendarTracks?.length) return 'something went wrong'
 
-  return ReponseSchema._parse(calendarTracks.map((track) => track.tracks))
-    .output
+  const slicedResponse = ReponseSchema._parse(
+    calendarTracks.slice(0, dayOfMonth).map((track) => track.tracks)
+  ).output
+
+  return slicedResponse?.concat(placeholderItems)
 })
