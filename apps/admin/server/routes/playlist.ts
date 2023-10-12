@@ -26,15 +26,38 @@ const ReponseSchema = v.object({
   }),
 })
 
+async function extractSpotifyPlaylistId(input: string): Promise<string | null> {
+  const idPattern = /^[0-9A-Za-z]{22}$/
+  if (idPattern.test(input)) return input
+
+  const fullUrlPattern =
+    /https:\/\/open\.spotify\.com\/playlist\/([0-9A-Za-z]{22})/
+  const match = fullUrlPattern.exec(input)
+  if (match?.[1]) {
+    return match[1]
+  }
+
+  const shortUrlPattern = /https:\/\/spotify\.link\/([0-9A-Za-z]){11}/
+  if (shortUrlPattern.exec(input)) {
+    const playlistUrl: string = await $fetch(input)
+    const match = fullUrlPattern.exec(playlistUrl)
+    if (match?.[1]) return match[1]
+  }
+
+  return null
+}
+
 export default defineEventHandler(async (event) => {
   const supabaseClient = await serverSupabaseClient<Database>(event)
-  const body: { spotifyPlaylistId: string } = await readBody(event)
+  const body: { spotifyString: string } = await readBody(event)
   const client_id = runtimeConfig.spotify.clientId
   const client_secret = runtimeConfig.spotify.clientSecret
   const token_url = runtimeConfig.spotify.tokenUrl
   const payload = Buffer.from(client_id + ':' + client_secret).toString(
     'base64'
   )
+  let playlistId = await extractSpotifyPlaylistId(body.spotifyString)
+
   const authResponse: {
     access_token: string
     token_type: string
@@ -51,7 +74,7 @@ export default defineEventHandler(async (event) => {
   })
 
   const playlistResponse = await $fetch(
-    `https://api.spotify.com/v1/playlists/${body.spotifyPlaylistId}`,
+    `https://api.spotify.com/v1/playlists/${playlistId}`,
     {
       headers: {
         Authorization: `Bearer ${authResponse.access_token}`,
@@ -67,11 +90,10 @@ export default defineEventHandler(async (event) => {
   const tracks = ReponseSchema._parse(playlistResponse).output?.tracks.items
   const calendarsResponse = await supabaseClient
     .from('calendars')
-    .upsert({ name: body.spotifyPlaylistId, slug: body.spotifyPlaylistId })
+    .upsert({ name: playlistId, slug: playlistId })
     .select()
 
   if (calendarsResponse.status === 201) {
-    tracks?.forEach((track) => console.log(track))
     const transformedCalendarTrackData = tracks?.map((track) => ({
       spotifyTrackID: track.track.id,
       calendarID: calendarsResponse.data?.[0].calendarID || 0,

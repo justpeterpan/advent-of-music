@@ -1,17 +1,19 @@
 <script setup lang="ts">
-const playlistId = ref('')
+const playlistId = ref('https://spotify.link/Hi39VPXYPDb')
 const error = ref(false)
 const loading = ref(false)
 const playlistItems = ref()
 
 function extractSpotifyPlaylistId(input: string): string | null {
   const idPattern = /^[0-9A-Za-z]{22}$/
-  if (idPattern.test(input)) {
-    return input
-  }
+  if (idPattern.test(input)) return input
 
-  const urlPattern = /https:\/\/open\.spotify\.com\/playlist\/([0-9A-Za-z]{22})/
-  const match = urlPattern.exec(input)
+  const shortUrlPattern = /https:\/\/spotify\.link\/([0-9A-Za-z]){11}/
+  if (shortUrlPattern.exec(input)) return input
+
+  const fullUrlPattern =
+    /https:\/\/open\.spotify\.com\/playlist\/([0-9A-Za-z]{22})/
+  const match = fullUrlPattern.exec(input)
   if (match?.[1]) {
     return match[1]
   }
@@ -30,7 +32,7 @@ async function submitPlaylistId() {
   const { data: tracks, status } = await useFetch('/playlist', {
     method: 'post',
     body: {
-      spotifyPlaylistId: validPlaylistId,
+      spotifyString: validPlaylistId,
     },
   })
   playlistId.value = validPlaylistId
@@ -52,7 +54,7 @@ watch(playlistId, (newValue) => {
       <form
         @submit.prevent="submitPlaylistId"
         method="post"
-        class="grid grid-cols-1 mb-1 w-[32rem] max-w-lg"
+        class="grid grid-cols-1 mb-1 max-w-xs w-80"
       >
         <label for="playlist-id" class="text-xs font-extralight"
           >Playlist Id</label
