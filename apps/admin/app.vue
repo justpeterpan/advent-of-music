@@ -49,7 +49,7 @@ watch(playlistId, (newValue) => {
 </script>
 
 <template>
-  <div class="min-h-[100svh] flex flex-col bg-black text-white">
+  <div class="min-h-[100svh] flex flex-col bg-black text-white bg">
     <div class="flex flex-grow flex-col mx-auto justify-center p-2">
       <form
         @submit.prevent="submitPlaylistId"
@@ -57,7 +57,7 @@ watch(playlistId, (newValue) => {
         class="grid grid-cols-1 mb-1 max-w-xs w-80"
       >
         <label for="playlist-id" class="text-xs font-extralight"
-          >Playlist Id</label
+          >Playlist</label
         >
         <input
           type="text"
@@ -98,3 +98,16 @@ watch(playlistId, (newValue) => {
     </div>
   </div>
 </template>
+
+<style>
+.bg {
+  background-image: url(/public/bg.png);
+  background-position: 50%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+}
+</style>
