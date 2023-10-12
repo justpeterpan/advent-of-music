@@ -23,10 +23,6 @@ importers:
         version: 6.8.0(webpack@5.88.2)
 
   apps/admin:
-    dependencies:
-      valibot:
-        specifier: ^0.19.0
-        version: 0.19.0
     devDependencies:
       '@nuxt/devtools':
         specifier: latest

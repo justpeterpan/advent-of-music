@@ -10,14 +10,14 @@ const { data: calendar } = await useFetch('/calendar', {
   <div v-if="typeof calendar !== 'string'">
     <ul class="grid grid-cols-4 gap-4">
       <li v-for="track of calendar">
-        <div class="relative">
+        <div class="relative group">
           <img
             :src="track.coverUrls[0]"
             :alt="track.trackName"
             class="rounded h-64 w-64 shadow"
           />
           <div
-            class="absolute -bottom-2 -left-4 bg-pink-500 rotate-6 text-white px-2 line-clamp-1"
+            class="absolute -bottom-2 -left-4 group-hover:bg-indigo-500 bg-pink-500 rotate-6 text-white px-2 line-clamp-1"
           >
             {{ track.trackName }}
           </div>
