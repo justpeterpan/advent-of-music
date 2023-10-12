@@ -87,18 +87,21 @@ export default defineEventHandler(async (event) => {
     }
   )
 
-  const tracks = ReponseSchema._parse(playlistResponse).output?.tracks.items
+  const response = {
+    tracks: ReponseSchema._parse(playlistResponse).output?.tracks.items,
+    id: playlistId,
+  }
   const calendarsResponse = await supabaseClient
     .from('calendars')
     .upsert({ name: playlistId, slug: playlistId })
     .select()
 
   if (calendarsResponse.status === 201) {
-    const transformedCalendarTrackData = tracks?.map((track) => ({
+    const transformedCalendarTrackData = response.tracks?.map((track) => ({
       spotifyTrackID: track.track.id,
       calendarID: calendarsResponse.data?.[0].calendarID || 0,
     }))
-    const transformedTrackData = tracks?.map((track) => ({
+    const transformedTrackData = response.tracks?.map((track) => ({
       spotifyTrackID: track.track.id,
       trackName: track.track.name,
       artistName: track.track.artists.map((artist) => artist.name),
@@ -112,5 +115,5 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  return tracks
+  return response
 })

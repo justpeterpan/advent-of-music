@@ -35,10 +35,10 @@ async function submitPlaylistId() {
       spotifyString: validPlaylistId,
     },
   })
-  playlistId.value = validPlaylistId
+  playlistId.value = tracks.value?.id || ''
   error.value = status.value === 'error'
   loading.value = status.value !== 'success'
-  playlistItems.value = tracks.value
+  playlistItems.value = tracks.value?.tracks
 }
 
 watch(playlistId, (newValue) => {
