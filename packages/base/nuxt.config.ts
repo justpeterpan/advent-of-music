@@ -5,6 +5,9 @@ export default defineNuxtConfig({
   supabase: {
     redirect: false,
   },
+  nitro: {
+    preset: "vercel",
+  },
   runtimeConfig: {
     supabase: {
       key: process.env.SUPABASE_KEY,
