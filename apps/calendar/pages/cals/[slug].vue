@@ -25,30 +25,30 @@ function concatenateArtistNames(names: Array<string>) {
 
 <template>
   <div v-if="typeof calendar !== 'string'">
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-24">
+    <div
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-24"
+    >
       <div
         v-for="(track, index) in calendar"
-        class="relative group shadow-lg max-w-[320px] rounded ring-1 ring-gray-200"
+        class="relative group shadow-lg max-w-[640px] rounded ring-1 ring-gray-200"
         :key="track.spotifyTrackID + index"
       >
         <ClientOnly>
-          <div class="relative overflow-hidden">
+          <div class="relative overflow-hidden rounded">
             <div
-              class="door flex align-middle rounded ring-1 ring-gray-200 bg-white"
+              class="door flex rounded ring-1 ring-gray-200 bg-white"
               :class="[
                 track.spotifyTrackID === 'placeholder'
                   ? 'cursor-not-allowed'
                   : 'cursor-pointer',
                 {
-                  'door-open':
+                  'door-open ring-0':
                     state.has(index) && track.spotifyTrackID !== 'placeholder',
                 },
               ]"
               @click="openDoor(index, track.spotifyTrackID)"
             >
-              <span class="text-9xl font-black self-center pl-2">{{
-                index + 1
-              }}</span>
+              <span class="text-9xl font-black pl-2">{{ index + 1 }}</span>
             </div>
             <NuxtImg
               :src="
@@ -58,26 +58,27 @@ function concatenateArtistNames(names: Array<string>) {
               "
               :alt="track.trackName"
               format="webp"
+              sizes="100vw"
               quality="60"
               class="rounded shadow object-cover drop-shadow-sm saturate-0 hover:saturate-100 transition-all duration-1000 ease-in-out"
             />
           </div>
-        </ClientOnly>
 
-        <div
-          v-if="track.artistName"
-          class="grid grid-flow-row rotate-6 gap-1 absolute bottom-4 -left-4 font-bold"
-        >
           <div
-            v-if="concatenateArtistNames(track.artistName)"
-            :class="trackClasses"
+            v-if="track.artistName"
+            class="grid grid-flow-row rotate-6 gap-1 absolute bottom-4 -left-4 font-bold"
           >
-            {{ concatenateArtistNames(track.artistName) }}
+            <div
+              v-if="concatenateArtistNames(track.artistName)"
+              :class="trackClasses"
+            >
+              {{ concatenateArtistNames(track.artistName) }}
+            </div>
+            <div v-if="track.trackName" :class="trackClasses">
+              {{ track.trackName }}
+            </div>
           </div>
-          <div v-if="track.trackName" :class="trackClasses">
-            {{ track.trackName }}
-          </div>
-        </div>
+        </ClientOnly>
       </div>
     </div>
   </div>
@@ -92,7 +93,7 @@ function concatenateArtistNames(names: Array<string>) {
   width: 100%;
   height: 100%;
   transform: translate(-100%, -100%);
-  transition: width 1.5s, height 1.5s, transform 0.5s;
+  transition: width 1s, height 1s, transform 1s;
   z-index: 1;
 }
 
@@ -100,6 +101,5 @@ function concatenateArtistNames(names: Array<string>) {
   width: 0%;
   height: 100%;
   transition: opacity 1s, width 1s, height 1s, transform 1s;
-  transform: translate(0%, -100%) scale(1);
 }
 </style>
