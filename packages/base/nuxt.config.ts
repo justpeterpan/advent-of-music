@@ -7,6 +7,10 @@ export default defineNuxtConfig({
   },
   nitro: {
     preset: "vercel",
+    compressPublicAssets: {
+      brotli: true,
+      gzip: false,
+    },
   },
   runtimeConfig: {
     supabase: {
