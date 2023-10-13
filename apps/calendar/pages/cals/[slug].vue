@@ -98,6 +98,7 @@ function concatenateArtistNames(names: Array<string>) {
 .door-open {
   width: 0%;
   height: 100%;
+  transform: translate(-100%, -100%) scale(1);
   transition: opacity 1s, width 1s, height 1s, transform 1s;
 }
 </style>
