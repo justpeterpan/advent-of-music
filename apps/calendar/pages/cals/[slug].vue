@@ -58,6 +58,7 @@ function concatenateArtistNames(names: Array<string>) {
                   : '/cover.jpg'
               "
               :alt="track.trackName"
+              placeholder
               format="webp"
               quality="60"
               class="rounded shadow object-cover drop-shadow-sm saturate-0 hover:saturate-100 transition-all duration-1000 ease-in-out"
