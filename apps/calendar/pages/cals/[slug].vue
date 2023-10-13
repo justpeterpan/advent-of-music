@@ -1,15 +1,18 @@
 <script setup lang="ts">
-const route = useRoute()
-const placeholderImage = '/cover.jpg'
+import { useStorage } from '@vueuse/core'
 const { data: calendar } = await useFetch('/calendar', {
   method: 'post',
-  body: { slug: route.params.slug },
+  body: { slug: useRoute().params.slug },
 })
 const openedTrack: Ref<number | null> = ref(null)
+const defaultState: Set<number> = new Set()
+const state = useStorage('opened', defaultState)
 
-function openDoor(trackIndex: number) {
-  console.log(trackIndex)
-  openedTrack.value = trackIndex
+async function openDoor(trackIndex: number, trackId: string) {
+  if (trackId !== 'placeholder') {
+    state.value = state.value.add(trackIndex)
+    openedTrack.value = trackIndex
+  }
 }
 
 const trackClasses =
@@ -25,30 +28,41 @@ function concatenateArtistNames(names: Array<string>) {
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-24">
       <div
         v-for="(track, index) in calendar"
-        class="relative group shadow-lg max-w-[640px] rounded ring-1 ring-gray-200"
-        :data-index="index"
-        :style="`--index: ${index}`"
+        class="relative group shadow-lg max-w-[320px] rounded ring-1 ring-gray-200"
+        :key="track.spotifyTrackID + index"
       >
-        <div class="relative overflow-hidden">
-          <div
-            class="door flex align-middle rounded ring-1 ring-gray-200 bg-white"
-            :class="{ 'door-open': openedTrack === index }"
-            @click="openDoor(index)"
-          >
-            <span class="text-9xl font-black self-center pl-2">{{
-              index + 1
-            }}</span>
+        <ClientOnly>
+          <div class="relative overflow-hidden">
+            <div
+              class="door flex align-middle rounded ring-1 ring-gray-200 bg-white"
+              :class="[
+                track.spotifyTrackID === 'placeholder'
+                  ? 'cursor-not-allowed'
+                  : 'cursor-pointer',
+                {
+                  'door-open':
+                    state.has(index) && track.spotifyTrackID !== 'placeholder',
+                },
+              ]"
+              @click="openDoor(index, track.spotifyTrackID)"
+            >
+              <span class="text-9xl font-black self-center pl-2">{{
+                index + 1
+              }}</span>
+            </div>
+            <NuxtImg
+              :src="
+                track.coverUrls[0] !== 'placeholder'
+                  ? track.coverUrls[0]
+                  : '/cover.jpg'
+              "
+              :alt="track.trackName"
+              format="webp"
+              quality="60"
+              class="rounded shadow object-cover drop-shadow-sm saturate-0 hover:saturate-100 transition-all duration-1000 ease-in-out"
+            />
           </div>
-          <img
-            :src="
-              track.coverUrls[0] !== 'placeholder'
-                ? track.coverUrls[0]
-                : placeholderImage
-            "
-            :alt="track.trackName"
-            class="rounded shadow drop-shadow-sm saturate-0 hover:saturate-100 transition-all duration-1000 ease-in-out"
-          />
-        </div>
+        </ClientOnly>
 
         <div
           v-if="track.artistName"
