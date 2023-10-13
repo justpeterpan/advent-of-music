@@ -6,6 +6,9 @@ const { data: calendar } = await useFetch('/calendar', {
   body: { slug: route.params.slug },
 })
 
+const trackClasses =
+  'group-hover:bg-indigo-500 bg-pink-500 text-white px-2 line-clamp-1 group-hover:transition-colors group-hover:duration-500 duration-500 max-w-max'
+
 function concatenateArtistNames(names: Array<string>) {
   return names.join(', ')
 }
@@ -31,15 +34,17 @@ function concatenateArtistNames(names: Array<string>) {
         />
         <div
           v-if="track.artistName"
-          class="z-20 absolute bottom-4 -left-4 font-bold group-hover:bg-indigo-500 bg-pink-500 rotate-6 text-white px-2 line-clamp-1 group-hover:transition-colors group-hover:duration-500 duration-500"
+          class="grid grid-flow-row rotate-6 gap-1 absolute bottom-4 -left-4 font-bold"
         >
-          {{ concatenateArtistNames(track.artistName) }}
-        </div>
-        <div
-          v-if="track.trackName"
-          class="text-sm absolute -bottom-2 -left-4 group-hover:bg-indigo-500 bg-pink-500 rotate-6 text-white px-2 line-clamp-1"
-        >
-          {{ track.trackName }}
+          <div
+            v-if="concatenateArtistNames(track.artistName)"
+            :class="trackClasses"
+          >
+            {{ concatenateArtistNames(track.artistName) }}
+          </div>
+          <div v-if="track.trackName" :class="trackClasses">
+            {{ track.trackName }}
+          </div>
         </div>
       </div>
     </div>
