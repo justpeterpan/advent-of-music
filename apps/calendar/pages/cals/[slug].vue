@@ -26,17 +26,17 @@ function concatenateArtistNames(names: Array<string>) {
 <template>
   <div v-if="typeof calendar !== 'string'">
     <div
-      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-24"
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-24"
     >
       <div
         v-for="(track, index) in calendar"
-        class="relative group shadow-lg max-w-[640px] rounded ring-1 ring-gray-200"
+        class="relative group shadow-lg mx-auto w-56 h-56 rounded ring-1 ring-gray-200"
         :key="track.spotifyTrackID + index"
       >
         <ClientOnly>
-          <div class="relative overflow-hidden rounded">
+          <div class="relative overflow-hidden rounded w-56 h-56">
             <div
-              class="door flex rounded ring-1 ring-gray-200 bg-white"
+              class="door flex rounded aspect-square ring-1 ring-gray-200 bg-white"
               :class="[
                 track.spotifyTrackID === 'placeholder'
                   ? 'cursor-not-allowed'
@@ -51,6 +51,7 @@ function concatenateArtistNames(names: Array<string>) {
               <span class="text-9xl font-black pl-2">{{ index + 1 }}</span>
             </div>
             <NuxtImg
+              v-if="state.has(index)"
               :src="
                 track.coverUrls[0] !== 'placeholder'
                   ? track.coverUrls[0]
@@ -58,7 +59,6 @@ function concatenateArtistNames(names: Array<string>) {
               "
               :alt="track.trackName"
               format="webp"
-              sizes="100vw"
               quality="60"
               class="rounded shadow object-cover drop-shadow-sm saturate-0 hover:saturate-100 transition-all duration-1000 ease-in-out"
             />

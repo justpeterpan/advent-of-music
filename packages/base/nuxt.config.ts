@@ -12,6 +12,10 @@ export default defineNuxtConfig({
       gzip: false,
     },
   },
+  image: {
+    domains: ["i.scdn.co"],
+    densities: [1, 2],
+  },
   runtimeConfig: {
     supabase: {
       key: process.env.SUPABASE_KEY,
