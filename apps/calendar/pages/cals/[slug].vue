@@ -50,7 +50,7 @@ function concatenateArtistNames(names: Array<string>) {
             >
               <span class="text-9xl font-black pl-2">{{ index + 1 }}</span>
             </div>
-            <NuxtImg
+            <img
               v-if="state.has(index)"
               :src="
                 track.coverUrls[0] !== 'placeholder'
@@ -58,9 +58,6 @@ function concatenateArtistNames(names: Array<string>) {
                   : '/cover.jpg'
               "
               :alt="track.trackName"
-              placeholder
-              format="webp"
-              quality="60"
               class="rounded shadow object-cover drop-shadow-sm saturate-0 hover:saturate-100 transition-all duration-1000 ease-in-out"
             />
           </div>
