@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import PlayIcon from '../../assets/icons/play.svg'
 import PauseIcon from '../../assets/icons/pause.svg'
+import OpenIcon from '../../assets/icons/open.svg'
 import { useStorage } from '@vueuse/core'
 const { data: calendar } = await useFetch('/calendar', {
   method: 'post',
@@ -100,7 +101,7 @@ function concatenateArtistNames(names: Array<string>) {
                   ? PauseIcon
                   : PlayIcon
               "
-              alt=""
+              alt="play pause icon"
               class="bg-neutral-500 bg-opacity-40 md:group-hover:visible absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 backdrop-blur-sm rounded-full p-4 w-14 h-14 border-2 fill-white cursor-pointer"
               :class="[
                 playing.state && playing.id === track.spotifyTrackID
@@ -108,6 +109,17 @@ function concatenateArtistNames(names: Array<string>) {
                   : 'visible md:invisible',
               ]"
             />
+            <NuxtLink
+              v-if="track.spotifyTrackID !== 'placeholder'"
+              :to="`https://open.spotify.com/track/${track.spotifyTrackID}`"
+              class="absolute w-10 h-10 top-0 right-0 visible md:invisible md:group-hover:visible cursor-pointer bg-gradient-to-tr from-transparent to-indigo-500 from-50% to-50% p-10"
+            >
+              <img
+                :src="OpenIcon"
+                alt="open icon"
+                class="absolute w-8 h-8 top-0 right-0 visible md:invisible md:group-hover:visible m-2"
+              />
+            </NuxtLink>
           </div>
 
           <div
