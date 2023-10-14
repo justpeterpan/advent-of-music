@@ -9,6 +9,7 @@ const ReponseSchema = v.array(
     trackName: v.string(),
     artistName: v.array(v.string()),
     coverUrls: v.array(v.string()),
+    previewUrl: v.nullable(v.string()),
   })
 )
 

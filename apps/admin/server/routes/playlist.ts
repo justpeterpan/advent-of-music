@@ -20,6 +20,7 @@ const ReponseSchema = v.object({
               })
             ),
           }),
+          preview_url: v.nullable(v.string()),
         }),
       })
     ),
@@ -82,7 +83,8 @@ export default defineEventHandler(async (event) => {
       method: 'GET',
       query: {
         market: 'DE',
-        fields: 'tracks.items(track(id, artists, name, album.images))',
+        fields:
+          'tracks.items(track(id, artists, name, album.images, preview_url))',
       },
     }
   )
@@ -96,10 +98,8 @@ export default defineEventHandler(async (event) => {
     .upsert({ name: playlistId, slug: playlistId })
     .select()
 
-  console.log('hello')
-
-  if (calendarsResponse.status === 201) {
-    console.log('hello 2')
+  if (calendarsResponse.status === 201 && response.tracks?.length) {
+    console.log('hello 1')
     const transformedCalendarTrackData = response.tracks
       ?.slice(0, 24)
       .map((track) => ({
@@ -111,11 +111,9 @@ export default defineEventHandler(async (event) => {
       trackName: track.track.name,
       artistName: track.track.artists.map((artist) => artist.name),
       coverUrls: track.track.album.images.map((image) => image.url),
+      previewUrl: track.track.preview_url,
     }))
     if (transformedCalendarTrackData && transformedTrackData) {
-      console.log('transformedCalendarTrackData', transformedCalendarTrackData)
-      console.log('transformedTrackData', transformedTrackData)
-      console.log('hello 3')
       await supabaseClient
         .from('calendar-tracks')
         .upsert(transformedCalendarTrackData)

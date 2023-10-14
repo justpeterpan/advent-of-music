@@ -53,18 +53,21 @@ export interface Database {
         Row: {
           artistName: string[] | null
           coverUrls: string[] | null
+          previewUrl: string | null
           spotifyTrackID: string
           trackName: string | null
         }
         Insert: {
           artistName?: string[] | null
           coverUrls?: string[] | null
+          previewUrl?: string | null
           spotifyTrackID: string
           trackName?: string | null
         }
         Update: {
           artistName?: string[] | null
           coverUrls?: string[] | null
+          previewUrl?: string | null
           spotifyTrackID?: string
           trackName?: string | null
         }

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import PlayIcon from '../../assets/icons/play.svg'
+import PauseIcon from '../../assets/icons/pause.svg'
 import { useStorage } from '@vueuse/core'
 const { data: calendar } = await useFetch('/calendar', {
   method: 'post',
@@ -7,12 +9,42 @@ const { data: calendar } = await useFetch('/calendar', {
 const openedTrack: Ref<number | null> = ref(null)
 const defaultState: Set<number> = new Set()
 const state = useStorage(`${useRoute().params.slug}`, defaultState)
+const playing = ref({ state: false, id: '' })
 
 async function openDoor(trackIndex: number, trackId: string) {
   if (trackId !== 'placeholder') {
     state.value = state.value.add(trackIndex)
     openedTrack.value = trackIndex
   }
+}
+
+function playAudio(trackId: string) {
+  const audioElement = document.getElementById(
+    trackId
+  ) as HTMLAudioElement | null
+
+  if (!audioElement) return
+
+  if (trackId === playing.value.id) {
+    if (audioElement.paused) {
+      audioElement.play()
+      playing.value.state = true
+    } else {
+      audioElement.pause()
+      playing.value.state = false
+    }
+    return
+  }
+
+  if (playing.value.id && playing.value.state) {
+    const currentlyPlaying = document.getElementById(
+      playing.value.id
+    ) as HTMLAudioElement | null
+    if (currentlyPlaying) currentlyPlaying.pause()
+  }
+
+  audioElement.play()
+  playing.value = { state: true, id: trackId }
 }
 
 const trackClasses =
@@ -60,6 +92,23 @@ function concatenateArtistNames(names: Array<string>) {
               :alt="track.trackName"
               class="rounded shadow object-cover drop-shadow-sm saturate-0 hover:saturate-100 transition-all duration-1000 ease-in-out"
             />
+            <div>
+              <img
+                @click="playAudio(track.spotifyTrackID)"
+                :src="
+                  playing.state && track.spotifyTrackID === playing.id
+                    ? PauseIcon
+                    : PlayIcon
+                "
+                alt=""
+                class="md:group-hover:visible absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 backdrop-blur-sm rounded-full p-4 w-14 h-14 border-2 fill-white cursor-pointer"
+                :class="[
+                  playing.state && playing.id === track.spotifyTrackID
+                    ? 'visible'
+                    : 'visible md:invisible',
+                ]"
+              />
+            </div>
           </div>
 
           <div
@@ -76,6 +125,12 @@ function concatenateArtistNames(names: Array<string>) {
               {{ track.trackName }}
             </div>
           </div>
+
+          <audio
+            v-if="track.previewUrl"
+            :src="track.previewUrl"
+            :id="track.spotifyTrackID"
+          />
         </ClientOnly>
       </div>
     </div>
