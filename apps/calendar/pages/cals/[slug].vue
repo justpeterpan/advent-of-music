@@ -30,13 +30,13 @@ function concatenateArtistNames(names: Array<string>) {
     >
       <div
         v-for="(track, index) in calendar"
-        class="relative group shadow-lg mx-auto w-56 h-56 rounded ring-1 ring-gray-200"
+        class="relative group shadow-lg w-56 h-56 rounded ring-1 ring-gray-200"
         :key="track.spotifyTrackID + index"
       >
         <ClientOnly>
           <div class="relative overflow-hidden rounded w-56 h-56">
             <div
-              class="door flex rounded aspect-square ring-1 ring-gray-200 bg-white"
+              class="door flex rounded ring-1 ring-gray-200 bg-white"
               :class="[
                 track.spotifyTrackID === 'placeholder'
                   ? 'cursor-not-allowed'
@@ -98,7 +98,6 @@ function concatenateArtistNames(names: Array<string>) {
 .door-open {
   width: 0%;
   height: 100%;
-  transform: translate(-100%, -100%) scale(1);
   transition: opacity 1s, width 1s, height 1s, transform 1s;
 }
 </style>
