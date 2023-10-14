@@ -46,12 +46,6 @@ importers:
       '@nuxt/devtools':
         specifier: latest
         version: 1.0.0-beta.0(nuxt@3.7.4)(vite@4.4.11)
-      '@vueuse/core':
-        specifier: ^10.5.0
-        version: 10.5.0(vue@3.3.4)
-      '@vueuse/nuxt':
-        specifier: ^10.5.0
-        version: 10.5.0(nuxt@3.7.4)(vue@3.3.4)
       nuxt:
         specifier: ^3.7.4
         version: 3.7.4(eslint@8.51.0)(typescript@4.9.5)
@@ -67,6 +61,12 @@ importers:
       '@nuxt/eslint-config':
         specifier: ^0.1.1
         version: 0.1.1(eslint@8.51.0)
+      '@vueuse/core':
+        specifier: ^10.5.0
+        version: 10.5.0(vue@3.3.4)
+      '@vueuse/nuxt':
+        specifier: ^10.5.0
+        version: 10.5.0(nuxt@3.7.4)(vue@3.3.4)
       eslint:
         specifier: ^8.28.0
         version: 8.51.0
