@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useClipboard } from '@vueuse/core'
+const { copy } = useClipboard()
 const playlistId = ref('')
 const error = ref(false)
 const loading = ref(false)
@@ -70,7 +72,7 @@ watch(playlistId, (newValue) => {
         <button
           type="submit"
           :disabled="!playlistId"
-          v-show="playlistId"
+          v-show="playlistId && !loading"
           class="text-left border-2 rounded-md p-2 hover:bg-white hover:text-black hover:transition-all hover:duration-500"
           :class="{
             'pointer-events-none text-gray-800 border-gray-800': !playlistId,
@@ -88,11 +90,24 @@ watch(playlistId, (newValue) => {
         </div>
         <div v-else-if="loading">working</div>
         <div v-else-if="!loading && playlistItems?.length">
-          <div>done...</div>
-          <NuxtLink
-            :to="`https://advent-of-music-calendar.vercel.app/cals/${playlistId}`"
-            >link to your calendar</NuxtLink
+          <div class="w-80 p-2 mb-1 border border-neutral-900 truncate">
+            <NuxtLink
+              :to="`https://advent-of-music-calendar.vercel.app/cals/${playlistId}`"
+              >{{
+                `https://advent-of-music-calendar.vercel.app/cals/${playlistId}`
+              }}</NuxtLink
+            >
+          </div>
+          <div
+            @click="
+              copy(
+                `https://advent-of-music-calendar.vercel.app/cals/${playlistId}`
+              )
+            "
+            class="w-80 p-2 border border-neutral-900 truncate"
           >
+            Click to copy url
+          </div>
         </div>
       </div>
     </div>
@@ -101,7 +116,7 @@ watch(playlistId, (newValue) => {
 
 <style>
 .bg {
-  background-image: url(/public/bg.png);
+  background-image: url(/bg.png);
   background-position: 50%;
   position: absolute;
   top: 0;

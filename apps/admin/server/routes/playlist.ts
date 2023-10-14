@@ -96,7 +96,10 @@ export default defineEventHandler(async (event) => {
     .upsert({ name: playlistId, slug: playlistId })
     .select()
 
+  console.log('hello')
+
   if (calendarsResponse.status === 201) {
+    console.log('hello 2')
     const transformedCalendarTrackData = response.tracks
       ?.slice(0, 24)
       .map((track) => ({
@@ -110,10 +113,13 @@ export default defineEventHandler(async (event) => {
       coverUrls: track.track.album.images.map((image) => image.url),
     }))
     if (transformedCalendarTrackData && transformedTrackData) {
+      console.log('transformedCalendarTrackData', transformedCalendarTrackData)
+      console.log('transformedTrackData', transformedTrackData)
+      console.log('hello 3')
       await supabaseClient
         .from('calendar-tracks')
-        .insert(transformedCalendarTrackData)
-      await supabaseClient.from('tracks').insert(transformedTrackData)
+        .upsert(transformedCalendarTrackData)
+      await supabaseClient.from('tracks').upsert(transformedTrackData)
     }
   }
 

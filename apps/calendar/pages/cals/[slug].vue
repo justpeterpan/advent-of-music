@@ -5,6 +5,7 @@ const { data: calendar } = await useFetch('/calendar', {
   body: { slug: useRoute().params.slug },
 })
 const openedTrack: Ref<number | null> = ref(null)
+// TODO extend for multiple calendars - as currently opened will be applied to all urls
 const defaultState: Set<number> = new Set()
 const state = useStorage('opened', defaultState)
 
