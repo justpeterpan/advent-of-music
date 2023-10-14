@@ -90,7 +90,7 @@ function concatenateArtistNames(names: Array<string>) {
                   : '/cover.jpg'
               "
               :alt="track.trackName"
-              class="rounded shadow object-cover drop-shadow-sm saturate-0 group-hover:saturate-100 transition-all duration-1000 ease-in-out"
+              class="rounded shadow object-cover w-56 h-56 drop-shadow-sm saturate-0 group-hover:saturate-100 transition-all duration-1000 ease-in-out"
             />
             <img
               v-if="track.previewUrl"
@@ -101,7 +101,7 @@ function concatenateArtistNames(names: Array<string>) {
                   : PlayIcon
               "
               alt=""
-              class="md:group-hover:visible absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 backdrop-blur-sm rounded-full p-4 w-14 h-14 border-2 fill-white cursor-pointer"
+              class="bg-neutral-500 bg-opacity-40 md:group-hover:visible absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 backdrop-blur-sm rounded-full p-4 w-14 h-14 border-2 fill-white cursor-pointer"
               :class="[
                 playing.state && playing.id === track.spotifyTrackID
                   ? 'visible'
