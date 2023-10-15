@@ -1,169 +1,162 @@
 <script setup lang="ts">
-import PlayIcon from '../../assets/icons/play.svg'
-import PauseIcon from '../../assets/icons/pause.svg'
-import OpenIcon from '../../assets/icons/open.svg'
+import PlayIcon from '~/assets/icons/play.svg'
+import PauseIcon from '~/assets/icons/pause.svg'
+import OpenIcon from '~/assets/icons/open.svg'
 import { useStorage } from '@vueuse/core'
+
 const { data: calendar } = await useFetch('/calendar', {
   method: 'post',
   body: { slug: useRoute().params.slug },
 })
-const openedTrack: Ref<number | null> = ref(null)
-const defaultState: Set<number> = new Set()
-const state = useStorage(`${useRoute().params.slug}`, defaultState)
-const playing = ref({ state: false, id: '' })
+const state = useStorage(`${useRoute().params.slug}`, new Set())
+const isPlaying = ref({ state: false, id: '' })
 
-async function openDoor(trackIndex: number, trackId: string) {
+function openDoor(trackIndex: number, trackId: string) {
   if (trackId !== 'placeholder') {
     state.value = state.value.add(trackIndex)
-    openedTrack.value = trackIndex
+  }
+}
+
+function getAudioElementById(id: string): HTMLAudioElement | null {
+  return document.getElementById(id) as HTMLAudioElement | null
+}
+
+function togglePlayback(audioElement: HTMLAudioElement) {
+  if (audioElement.paused) {
+    audioElement.play()
+    isPlaying.value.state = true
+  } else {
+    audioElement.pause()
+    isPlaying.value.state = false
   }
 }
 
 function playAudio(trackId: string) {
-  const audioElement = document.getElementById(
-    trackId
-  ) as HTMLAudioElement | null
+  const audioElement = getAudioElementById(trackId)
 
   if (!audioElement) return
 
-  if (trackId === playing.value.id) {
-    if (audioElement.paused) {
-      audioElement.play()
-      playing.value.state = true
-    } else {
-      audioElement.pause()
-      playing.value.state = false
-    }
+  if (trackId === isPlaying.value.id) {
+    togglePlayback(audioElement)
     return
   }
 
-  if (playing.value.id && playing.value.state) {
-    const currentlyPlaying = document.getElementById(
-      playing.value.id
-    ) as HTMLAudioElement | null
+  // pause currently playing track
+  if (isPlaying.value.id) {
+    const currentlyPlaying = getAudioElementById(isPlaying.value.id)
     if (currentlyPlaying) currentlyPlaying.pause()
   }
 
+  // play the new track
   audioElement.play()
-  playing.value = { state: true, id: trackId }
+  isPlaying.value = { state: true, id: trackId }
 }
-
-const trackClasses =
-  'group-hover:bg-indigo-500 bg-pink-500 text-white px-2 line-clamp-1 group-hover:transition-colors group-hover:duration-500 duration-500 max-w-max'
 
 function concatenateArtistNames(names: Array<string>) {
   return names.join(', ')
 }
+
+function isPlaceHolder(door: { spotifyTrackID: string }) {
+  return door.spotifyTrackID === 'placeholder'
+}
+
+function isOpened(index: number) {
+  return state.value.has(index)
+}
+
+function currentlyPlaying(door: { spotifyTrackID: string }) {
+  return isPlaying.value.state && isPlaying.value.id === door.spotifyTrackID
+}
+
+const trackClasses =
+  'group-hover:bg-indigo-500 bg-pink-500 text-white px-2 line-clamp-1 group-hover:transition-colors group-hover:duration-500 duration-500 max-w-max'
 </script>
 
 <template>
   <div v-if="typeof calendar !== 'string'">
-    <div
+    <main
       class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-24"
     >
       <div
-        v-for="(track, index) in calendar"
-        class="relative group shadow-lg w-56 h-56 rounded ring-1 ring-gray-200"
-        :key="track.spotifyTrackID + index"
+        v-for="(door, index) in calendar"
+        class="relative group w-56 h-56 rounded ring-1 ring-gray-200 shadow"
+        :key="door.spotifyTrackID + index"
       >
         <ClientOnly>
-          <div class="relative overflow-hidden rounded w-56 h-56">
+          <section class="relative overflow-hidden rounded w-56 h-56">
+            <!-- Overlay and door number -->
             <div
-              class="door flex rounded ring-1 ring-gray-200 bg-white"
+              class="z-10 absolute top-full left-full w-full h-full -translate-x-full -translate-y-full transition-multiple duration-1000 flex rounded ring-1 ring-gray-200 bg-white"
               :class="[
-                track.spotifyTrackID === 'placeholder'
-                  ? 'cursor-not-allowed'
-                  : 'cursor-pointer',
-                {
-                  'door-open !ring-0':
-                    state.has(index) && track.spotifyTrackID !== 'placeholder',
-                },
+                isPlaceHolder(door) ? 'cursor-not-allowed' : 'cursor-pointer',
+                isOpened(index) && !isPlaceHolder(door)
+                  ? 'w-0 ring-0'
+                  : 'w-full ring-1',
               ]"
-              @click="openDoor(index, track.spotifyTrackID)"
+              @click="openDoor(index, door.spotifyTrackID)"
             >
               <span class="text-9xl font-black pl-2">{{ index + 1 }}</span>
             </div>
+            <!-- Cover -->
             <img
-              v-if="state.has(index)"
-              :src="
-                track.coverUrls[0] !== 'placeholder'
-                  ? track.coverUrls[0]
-                  : '/cover.jpg'
-              "
-              :alt="track.trackName"
-              class="rounded shadow object-cover w-56 h-56 drop-shadow-sm saturate-0 group-hover:saturate-100 transition-all duration-1000 ease-in-out"
+              v-if="isOpened(index)"
+              :src="!isPlaceHolder(door) ? door.coverUrls[0] : '/cover.jpg'"
+              :alt="`${door.trackName} cover art`"
+              class="rounded object-cover w-56 h-56 saturate-0 group-hover:saturate-100 transition-all duration-1000 ease-in-out"
             />
-            <img
-              v-if="track.previewUrl"
-              @click="playAudio(track.spotifyTrackID)"
-              :src="
-                playing.state && track.spotifyTrackID === playing.id
-                  ? PauseIcon
-                  : PlayIcon
-              "
-              alt="play pause icon"
-              class="bg-neutral-500 bg-opacity-40 md:group-hover:visible absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 backdrop-blur-sm rounded-full p-4 w-14 h-14 border-2 fill-white cursor-pointer"
+            <!-- Play/Pause button & spotify link-->
+            <div
+              class="opacity-100 md:group-hover:opacity-100 transform-multiple duration-500 ease-in-out cursor-pointer fill-white"
               :class="[
-                playing.state && playing.id === track.spotifyTrackID
-                  ? 'visible'
-                  : 'visible md:invisible',
+                currentlyPlaying(door)
+                  ? 'opacity-100'
+                  : 'opacity-100 md:opacity-0',
               ]"
-            />
-            <NuxtLink
-              v-if="track.spotifyTrackID !== 'placeholder'"
-              :to="`https://open.spotify.com/track/${track.spotifyTrackID}`"
-              class="absolute w-10 h-10 top-0 right-0 visible md:invisible md:group-hover:visible cursor-pointer bg-gradient-to-tr from-transparent to-indigo-500 from-50% to-50% p-10"
             >
               <img
-                :src="OpenIcon"
-                alt="open icon"
-                class="absolute w-8 h-8 top-0 right-0 visible md:invisible md:group-hover:visible m-2"
+                v-if="door.previewUrl"
+                @click="playAudio(door.spotifyTrackID)"
+                :src="currentlyPlaying(door) ? PauseIcon : PlayIcon"
+                alt="play pause icon"
+                class="bg-neutral-500 bg-opacity-80 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-full p-4 w-14 h-14 border-2"
               />
-            </NuxtLink>
-          </div>
-
-          <div
-            v-if="track.artistName"
+              <section>
+                <NuxtLink
+                  v-if="isOpened(index) && !isPlaceHolder(door)"
+                  :to="`https://open.spotify.com/track/${door.spotifyTrackID}`"
+                  class="absolute w-10 h-10 top-0 right-0 bg-gradient-to-tr from-transparent to-indigo-500 from-50% to-50% p-10"
+                >
+                  <img
+                    :src="OpenIcon"
+                    alt="open icon"
+                    class="absolute w-8 h-8 top-0 right-0 m-2"
+                  />
+                </NuxtLink>
+              </section>
+            </div>
+          </section>
+          <!-- Artist & track name -->
+          <section
+            v-if="door.artistName && door.trackName"
             class="grid grid-flow-row rotate-6 gap-1 absolute bottom-4 -left-4 font-bold"
           >
-            <div
-              v-if="concatenateArtistNames(track.artistName)"
-              :class="trackClasses"
-            >
-              {{ concatenateArtistNames(track.artistName) }}
+            <div :class="trackClasses">
+              {{ concatenateArtistNames(door.artistName) }}
             </div>
-            <div v-if="track.trackName" :class="trackClasses">
-              {{ track.trackName }}
+            <div :class="trackClasses">
+              {{ door.trackName }}
             </div>
-          </div>
-
+          </section>
+          <!-- Song preview -->
           <audio
-            v-if="track.previewUrl"
-            :src="track.previewUrl"
-            :id="track.spotifyTrackID"
+            v-if="door.previewUrl"
+            hidden
+            :src="door.previewUrl"
+            :id="door.spotifyTrackID"
           />
         </ClientOnly>
       </div>
-    </div>
+    </main>
   </div>
   <div v-else>{{ calendar }}</div>
 </template>
-
-<style>
-.door {
-  position: absolute;
-  top: 100%;
-  left: 100%;
-  width: 100%;
-  height: 100%;
-  transform: translate(-100%, -100%);
-  transition: width 1s, height 1s, transform 1s;
-  z-index: 1;
-}
-
-.door-open {
-  width: 0%;
-  height: 100%;
-  transition: opacity 1s, width 1s, height 1s, transform 1s;
-}
-</style>

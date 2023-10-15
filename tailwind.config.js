@@ -2,8 +2,11 @@
 module.exports = {
   content: [],
   theme: {
-    extend: {},
+    extend: {
+      transitionProperty: {
+        multiple: 'width, height, opacity, transform, visibility',
+      },
+    },
   },
   plugins: [],
 }
-
