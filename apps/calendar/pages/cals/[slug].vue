@@ -86,7 +86,7 @@ const trackClasses =
           <section class="relative overflow-hidden rounded w-56 h-56">
             <!-- Overlay and door number -->
             <div
-              class="z-10 absolute top-full left-full w-full h-full -translate-x-full -translate-y-full transition-multiple duration-1000 flex rounded ring-1 ring-gray-200 bg-white"
+              class="z-10 absolute top-full left-full h-full -translate-x-full -translate-y-full transition-multiple duration-1000 flex rounded ring-1 ring-gray-200 bg-white"
               :class="[
                 isPlaceHolder(door) ? 'cursor-not-allowed' : 'cursor-pointer',
                 isOpened(index) && !isPlaceHolder(door)

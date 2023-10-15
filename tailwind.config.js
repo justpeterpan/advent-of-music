@@ -4,7 +4,7 @@ module.exports = {
   theme: {
     extend: {
       transitionProperty: {
-        multiple: 'width, height, opacity, transform, visibility',
+        multiple: 'width, height, opacity, transform',
       },
     },
   },
