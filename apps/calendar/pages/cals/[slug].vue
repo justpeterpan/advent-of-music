@@ -75,7 +75,7 @@ function concatenateArtistNames(names: Array<string>) {
                   ? 'cursor-not-allowed'
                   : 'cursor-pointer',
                 {
-                  'door-open ring-0':
+                  'door-open !ring-0':
                     state.has(index) && track.spotifyTrackID !== 'placeholder',
                 },
               ]"
