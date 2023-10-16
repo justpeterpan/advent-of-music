@@ -2,10 +2,12 @@
   <div class="grid grid-cols-2 gap-2">
     <label
       for="dark"
-      class="border border-white rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-600 focus-within:border-blue-600"
-      :class="{ 'ring-2 ring-blue-600 border-blue-600': selected === 'dark' }"
+      class="rounded-lg overflow-hidden focus-within:ring-4 focus-within:ring-blue-600 cursor-pointer"
+      :class="[
+        selected === 'dark' ? 'ring-4 ring-blue-600' : 'ring-1 ring-white',
+      ]"
     >
-      <img :src="`dark.jpg`" alt="" class="object-cover rounded-lg" />
+      <img :src="`dark.jpg`" alt="" class="object-cover rounded-md" />
       <input
         type="radio"
         id="dark"
@@ -16,10 +18,12 @@
     </label>
     <label
       for="light"
-      class="border border-white rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-600 focus-within:border-blue-600"
-      :class="{ 'ring-2 ring-blue-600 border-blue-600': selected === 'light' }"
+      class="rounded-lg overflow-hidden focus-within:ring-4 focus-within:ring-blue-600 cursor-pointer"
+      :class="[
+        selected === 'light' ? 'ring-4 ring-blue-600' : 'ring-1 ring-white',
+      ]"
     >
-      <img :src="`light.jpg`" alt="" class="object-cover rounded-lg" />
+      <img :src="`light.jpg`" alt="" class="object-cover rounded-md" />
       <input
         type="radio"
         id="light"
