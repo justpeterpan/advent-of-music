@@ -4,11 +4,27 @@ import PauseIcon from '~/assets/icons/pause.svg'
 import OpenIcon from '~/assets/icons/open.svg'
 import { useStorage } from '@vueuse/core'
 
+const route = useRoute()
+
+let theme = ''
+
+if (typeof route.query.t === 'string') {
+  theme = route.query.t
+} else if (
+  Array.isArray(route.query.t) &&
+  route.query.t.length > 0 &&
+  typeof route.query.t[0] === 'string'
+) {
+  theme = route.query.t[0]
+} else {
+  theme = 'default'
+}
+
 const { data: calendar } = await useFetch('/calendar', {
   method: 'post',
-  body: { slug: useRoute().params.slug },
+  body: { slug: route.params.slug },
 })
-const state = useStorage(`${useRoute().params.slug}`, new Set())
+const state = useStorage(`${route.params.slug}`, new Set())
 const isPlaying = ref({ state: false, id: '' })
 
 function openDoor(trackIndex: number, trackId: string) {
@@ -83,16 +99,21 @@ function currentlyPlaying(door: { spotifyTrackID: string }) {
           <section class="relative overflow-hidden rounded w-56 h-56">
             <!-- Overlay and door number -->
             <div
-              class="z-10 absolute top-full left-full h-full -translate-x-full -translate-y-full transition-multiple duration-1000 flex rounded bg-white"
+              class="z-10 absolute top-full left-full h-full -translate-x-full -translate-y-full transition-multiple duration-1000 flex rounded"
               :class="[
                 isPlaceHolder(door) ? 'cursor-not-allowed' : 'cursor-pointer',
                 isOpened(index) && !isPlaceHolder(door)
                   ? 'w-0 ring-0'
                   : 'w-full ring-1 ring-gray-200',
+                theme === 'dark' ? 'bg-black' : 'bg-white',
               ]"
               @click="openDoor(index, door.spotifyTrackID)"
             >
-              <span class="text-9xl font-black pl-2">{{ index + 1 }}</span>
+              <span
+                class="text-9xl pl-2 font-black"
+                :class="theme === 'dark' ? 'text-white' : 'text-black'"
+                >{{ index + 1 }}</span
+              >
             </div>
             <!-- Cover -->
             <img
@@ -137,8 +158,11 @@ function currentlyPlaying(door: { spotifyTrackID: string }) {
             v-if="door.artistName && door.trackName"
             class="grid grid-flow-row rotate-6 gap-1 absolute bottom-4 -left-4 font-bold"
           >
-            <BaseLabel :text="concatenateArtistNames(door.artistName)" />
-            <BaseLabel :text="door.trackName" />
+            <BaseLabel
+              :text="concatenateArtistNames(door.artistName)"
+              :theme="theme"
+            />
+            <BaseLabel :text="door.trackName" :theme="theme" />
           </section>
           <!-- Song preview -->
           <audio
