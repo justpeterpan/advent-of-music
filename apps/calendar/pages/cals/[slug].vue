@@ -67,9 +67,6 @@ function isOpened(index: number) {
 function currentlyPlaying(door: { spotifyTrackID: string }) {
   return isPlaying.value.state && isPlaying.value.id === door.spotifyTrackID
 }
-
-const trackClasses =
-  'group-hover:bg-indigo-500 bg-pink-500 text-white px-2 line-clamp-1 group-hover:transition-colors group-hover:duration-500 duration-500 max-w-max'
 </script>
 
 <template>
@@ -86,12 +83,12 @@ const trackClasses =
           <section class="relative overflow-hidden rounded w-56 h-56">
             <!-- Overlay and door number -->
             <div
-              class="z-10 absolute top-full left-full h-full -translate-x-full -translate-y-full transition-multiple duration-1000 flex rounded ring-1 ring-gray-200 bg-white"
+              class="z-10 absolute top-full left-full h-full -translate-x-full -translate-y-full transition-multiple duration-1000 flex rounded bg-white"
               :class="[
                 isPlaceHolder(door) ? 'cursor-not-allowed' : 'cursor-pointer',
                 isOpened(index) && !isPlaceHolder(door)
                   ? 'w-0 ring-0'
-                  : 'w-full ring-1',
+                  : 'w-full ring-1 ring-gray-200',
               ]"
               @click="openDoor(index, door.spotifyTrackID)"
             >
@@ -140,12 +137,8 @@ const trackClasses =
             v-if="door.artistName && door.trackName"
             class="grid grid-flow-row rotate-6 gap-1 absolute bottom-4 -left-4 font-bold"
           >
-            <div :class="trackClasses">
-              {{ concatenateArtistNames(door.artistName) }}
-            </div>
-            <div :class="trackClasses">
-              {{ door.trackName }}
-            </div>
+            <BaseLabel :text="concatenateArtistNames(door.artistName)" />
+            <BaseLabel :text="door.trackName" />
           </section>
           <!-- Song preview -->
           <audio
