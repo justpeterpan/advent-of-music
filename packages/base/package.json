@@ -11,6 +11,7 @@
     "postinstall": "nuxt prepare .playground"
   },
   "devDependencies": {
+    "@nuxt/devtools": "1.0.0-beta.2",
     "@nuxt/eslint-config": "^0.1.1",
     "@vueuse/core": "^10.5.0",
     "@vueuse/nuxt": "^10.5.0",
