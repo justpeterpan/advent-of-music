@@ -1,17 +1,20 @@
 import * as v from 'valibot'
 import { Temporal } from '@js-temporal/polyfill'
 import { serverSupabaseClient } from '#supabase/server'
-import { Database } from '../../../../supabase'
+import type { Database } from '../../../../supabase'
 
-const ReponseSchema = v.array(
-  v.object({
-    spotifyTrackID: v.string(),
-    trackName: v.string(),
-    artistName: v.array(v.string()),
-    coverUrls: v.array(v.string()),
-    previewUrl: v.nullable(v.string()),
-  })
-)
+const ReponseSchema = v.object({
+  calendarName: v.string(),
+  tracks: v.array(
+    v.object({
+      spotifyTrackID: v.string(),
+      trackName: v.string(),
+      artistName: v.array(v.string()),
+      coverUrls: v.array(v.string()),
+      previewUrl: v.nullable(v.string()),
+    })
+  ),
+})
 
 export default defineEventHandler(async () => {
   const event = useEvent()
@@ -20,7 +23,7 @@ export default defineEventHandler(async () => {
   const { slug } = await readBody(event)
   const { data: calendarId, error: calendarIdError } = await supabaseClient
     .from('calendars')
-    .select('calendarID')
+    .select('calendarID, name')
     .eq('slug', slug)
 
   if (calendarIdError?.message || !calendarId?.length)
@@ -45,9 +48,13 @@ export default defineEventHandler(async () => {
   }
   const placeholderItems = Array(placeholdersNeeded).fill(placeholderItem)
 
-  const slicedResponse = ReponseSchema._parse(
-    calendarTracks.slice(0, dayOfMonth).map((track) => track.tracks)
-  ).output
+  const slicedResponse = ReponseSchema._parse({
+    calendarName: calendarId[0].name,
+    tracks: calendarTracks.slice(0, dayOfMonth).map((track) => track.tracks),
+  }).output
 
-  return slicedResponse?.concat(placeholderItems)
+  return {
+    ...slicedResponse,
+    tracks: slicedResponse?.tracks?.concat(placeholderItems),
+  }
 })

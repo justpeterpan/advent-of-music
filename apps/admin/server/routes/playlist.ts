@@ -1,4 +1,5 @@
 import * as v from 'valibot'
+import { slugifyString } from '../../utils/utils'
 import { serverSupabaseClient } from '#supabase/server'
 import { Database } from '../../../../supabase'
 
@@ -50,7 +51,9 @@ async function extractSpotifyPlaylistId(input: string): Promise<string | null> {
 
 export default defineEventHandler(async (event) => {
   const supabaseClient = await serverSupabaseClient<Database>(event)
-  const body: { spotifyString: string } = await readBody(event)
+  const body: { spotifyString: string; playlistName: string } = await readBody(
+    event
+  )
   const client_id = runtimeConfig.spotify.clientId
   const client_secret = runtimeConfig.spotify.clientSecret
   const token_url = runtimeConfig.spotify.tokenUrl
@@ -92,14 +95,15 @@ export default defineEventHandler(async (event) => {
   const response = {
     tracks: ReponseSchema._parse(playlistResponse).output?.tracks.items,
     id: playlistId,
+    calendarName: body.playlistName,
+    slug: `${slugifyString(body.playlistName)}-${playlistId?.slice(0, 4)}`,
   }
   const calendarsResponse = await supabaseClient
     .from('calendars')
-    .upsert({ name: playlistId, slug: playlistId })
+    .upsert({ name: response.calendarName, slug: response.slug })
     .select()
 
   if (calendarsResponse.status === 201 && response.tracks?.length) {
-    console.log('hello 1')
     const transformedCalendarTrackData = response.tracks
       ?.slice(0, 24)
       .map((track) => ({

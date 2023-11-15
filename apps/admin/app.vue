@@ -3,27 +3,11 @@ import { useClipboard } from '@vueuse/core'
 
 const { copy } = useClipboard()
 const playlistId = ref('')
+const playlistName = ref('')
 const error = ref(false)
 const loading = ref(false)
 const playlistItems = ref()
 const selectedTheme = ref('dark')
-
-function extractSpotifyPlaylistId(input: string): string | null {
-  const idPattern = /^[0-9A-Za-z]{22}$/
-  if (idPattern.test(input)) return input
-
-  const shortUrlPattern = /https:\/\/spotify\.link\/([0-9A-Za-z]){11}/
-  if (shortUrlPattern.exec(input)) return input
-
-  const fullUrlPattern =
-    /https:\/\/open\.spotify\.com\/playlist\/([0-9A-Za-z]{22})/
-  const match = fullUrlPattern.exec(input)
-  if (match?.[1]) {
-    return match[1]
-  }
-
-  return null
-}
 
 async function submitPlaylistId() {
   const validPlaylistId = extractSpotifyPlaylistId(playlistId.value)
@@ -37,6 +21,7 @@ async function submitPlaylistId() {
     method: 'post',
     body: {
       spotifyString: validPlaylistId,
+      playlistName: playlistName.value,
     },
   })
   playlistId.value = tracks.value?.id || ''
@@ -46,7 +31,7 @@ async function submitPlaylistId() {
 }
 
 watch(playlistId, (newValue) => {
-  if (playlistId.value === '') {
+  if (playlistId.value) {
     error.value = false
   }
 })
@@ -71,14 +56,23 @@ watch(playlistId, (newValue) => {
           class="rounded-md p-2 my-2 border-2 border-black shadow-black ring-2 ring-white text-black"
           :class="{ 'ring-rose-500': error }"
         />
+        <label for="playlist-name" class="text-xs font-extralight">Name</label>
+        <input
+          type="text"
+          id="playlist-name"
+          v-model="playlistName"
+          required
+          class="rounded-md p-2 my-2 border-2 border-black shadow-black ring-2 ring-white text-black"
+          :class="{ 'ring-rose-500': error }"
+        />
         <section class="mb-4">
           <h2 class="text-xs font-extralight my-2">Theme</h2>
           <ThemePicker v-model="selectedTheme" />
         </section>
         <button
           type="submit"
-          :disabled="!playlistId"
-          v-show="playlistId && !loading"
+          :disabled="!playlistId && !playlistName"
+          v-show="!loading && playlistId && playlistName"
           class="text-left border-2 rounded-md p-2 hover:bg-white hover:text-black hover:transition-all hover:duration-500"
           :class="{
             'pointer-events-none text-gray-800 border-gray-800': !playlistId,
@@ -92,22 +86,28 @@ watch(playlistId, (newValue) => {
           <span v-if="!playlistId"
             >Please provide a Spotify playlist ID or URL.</span
           >
-          <span v-else>Something went wrong.</span>
+          <span v-else>Invalid Spotify Playlist ID. Is it public?</span>
         </div>
         <div v-else-if="loading">working</div>
         <div v-else-if="!loading && playlistItems?.length">
           <div class="w-80 p-2 mb-1 border border-neutral-900 truncate">
             <NuxtLink
-              :to="`https://advent-of-music-calendar.vercel.app/cals/${playlistId}?t=${selectedTheme}`"
+              :to="`https://advent-of-music-calendar.vercel.app/cals/${slugifyString(
+                playlistName
+              )}-${playlistId?.slice(0, 4)}?t=${selectedTheme}`"
               >{{
-                `https://advent-of-music-calendar.vercel.app/cals/${playlistId}?t=${selectedTheme}`
+                `https://advent-of-music-calendar.vercel.app/cals/${slugifyString(
+                  playlistName
+                )}-${playlistId?.slice(0, 4)}?t=${selectedTheme}`
               }}</NuxtLink
             >
           </div>
           <div
             @click="
               copy(
-                `https://advent-of-music-calendar.vercel.app/cals/${playlistId}?t=${selectedTheme}`
+                `https://advent-of-music-calendar.vercel.app/cals/$${slugifyString(
+                  playlistName
+                )}-${playlistId?.slice(0, 4)}?t=${selectedTheme}`
               )
             "
             class="w-80 p-2 border border-neutral-900 truncate cursor-pointer"
