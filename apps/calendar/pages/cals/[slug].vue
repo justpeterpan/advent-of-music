@@ -95,6 +95,7 @@ function currentlyPlaying(door: { spotifyTrackID: string }) {
     </h1>
     <h2
       class="max-w-max text-3xl font-extrabold underline underline-offset-8 decoration-wavy mt-10 mb-24 decoration-pink-500"
+      :class="route.query.t === 'dark' ? 'text-white' : 'text-black'"
     >
       {{ calendar?.calendarName }}
     </h2>
