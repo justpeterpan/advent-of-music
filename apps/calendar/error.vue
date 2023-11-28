@@ -21,7 +21,14 @@ onMounted(() => {
   <div
     class="flex place-items-center h-screen flex-col justify-center bg-black text-white"
   >
-    <NuxtLink :to="useRuntimeConfig().public.admin"
+    <p class="font-bold">
+      Oops! Something went wrong with the calendar link provided.
+    </p>
+    <p class="mb-10">
+      Please check if you've inserted the correct link and try again.
+    </p>
+
+    <NuxtLink :to="useRuntimeConfig().public.admin" target="_self"
       ><button class="button" type="button">
         <span class="button__text">Create your own calendar</span>
         <span class="button__icon"

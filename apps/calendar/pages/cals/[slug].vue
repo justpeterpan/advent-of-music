@@ -88,17 +88,15 @@ function currentlyPlaying(door: { spotifyTrackID: string }) {
 <template>
   <div v-if="typeof calendar !== 'string'">
     <h1
-      class="max-w-max mt-24 text-5xl font-black underline underline-offset-8 decoration-wavy decoration-pink-500 decoration hover:underline-offset-4 hover:transition-all hover:duration-500 duration-500 ease-in-out hover:ease-in-out hover:decoration-indigo-500"
+      class="max-w-max mt-24 text-5xl font-black underline underline-offset-[14px] decoration-wavy decoration-pink-500 decoration hover:underline-offset-[10px] hover:transition-all hover:duration-500 duration-500 ease-in-out hover:ease-in-out hover:decoration-indigo-500"
       :class="route.query.t === 'dark' ? 'text-white' : 'text-black'"
     >
-      Advent Of Music
+      {{ calendar?.calendarName ? calendar?.calendarName : 'Advent of Music' }}
     </h1>
     <h2
       class="max-w-max text-3xl font-extrabold underline underline-offset-8 decoration-wavy mt-10 mb-24 decoration-pink-500"
       :class="route.query.t === 'dark' ? 'text-white' : 'text-black'"
-    >
-      {{ calendar?.calendarName }}
-    </h2>
+    ></h2>
     <main
       class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-24"
     >
