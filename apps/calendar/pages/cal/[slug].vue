@@ -27,7 +27,7 @@
               class="w-full h-full rounded-2xl will-change-transform relative bg-cover [transform-style:preserve-3d] origin-[0] [perspective:850px] transition-all duration-1000 ease-out cursor-pointer"
               :class="isOpened(index) ? 'door__open' : ''"
               :style="{
-                backgroundImage: `url(/doors/flat/1.png)`,
+                backgroundImage: `url(/doors/${theme}/${index + 1}.png)`,
               }"
             />
             <!-- door content -->
@@ -122,12 +122,16 @@ function throwError() {
 
 let theme = ''
 
-if (typeof route.query.t === 'string') {
+if (
+  (typeof route.query.t === 'string' && route.query.t === 'flat') ||
+  route.query.t === 'cats'
+) {
   theme = route.query.t
 } else if (
   Array.isArray(route.query.t) &&
   route.query.t.length > 0 &&
-  typeof route.query.t[0] === 'string'
+  typeof route.query.t[0] === 'string' &&
+  (route.query.t[0] === 'flat' || route.query.t[0] === 'cats')
 ) {
   theme = route.query.t[0]
 } else {
