@@ -27,7 +27,7 @@
               class="w-full h-full rounded-2xl will-change-transform relative bg-cover [transform-style:preserve-3d] origin-[0] [perspective:850px] transition-all duration-1000 ease-out cursor-pointer"
               :class="isOpened(index) ? 'door__open' : ''"
               :style="{
-                backgroundImage: `url(/doors/${theme}/${index + 1}.png)`,
+                backgroundImage: `url(/assets/doors/${theme}/${index + 1}.png)`,
               }"
             />
             <!-- door content -->
@@ -41,6 +41,7 @@
               />
               <!-- play/pause button & spotify link-->
               <div
+                v-if="isOpened(index)"
                 class="opacity-100 md:group-hover:opacity-100 md:group-focus-within:opacity-100 transform-multiple duration-500 ease-in-out cursor-pointer fill-white"
                 :class="[
                   currentlyPlaying(door)
