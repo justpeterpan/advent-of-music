@@ -8,7 +8,6 @@
 </template>
 
 <script setup lang="ts">
-const route = useRoute()
 useHead({
   bodyAttrs: {
     class: 'bg-neutral-950',

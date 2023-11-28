@@ -12,6 +12,12 @@ onMounted(() => {
     snowflake.style.animationDuration = `${animDuration}s, 3s`
   })
 })
+
+useHead({
+  bodyAttrs: {
+    class: 'bg-neutral-950',
+  },
+})
 </script>
 
 <template>
