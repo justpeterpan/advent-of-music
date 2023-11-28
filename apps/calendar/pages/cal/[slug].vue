@@ -1,14 +1,14 @@
 <template>
   <div v-if="typeof calendar !== 'string'">
     <h1
-      class="md:absolute md:-left-10 md:[writing-mode:vertical-rl] text-[#F2EDE4] pt-20 font-[600]"
+      class="lg:absolute lg:-left-3 lg:[writing-mode:vertical-rl] text-[#F2EDE4] pt-10 lg:pt-20 font-[600] px-10 lg:px-0 [font-family:'Zodiak-Variable',serif] lg:text-8xl text-6xl"
     >
       {{
         calendar?.calendarName ? calendar?.calendarName : 'Advent of music 🎄'
       }}
     </h1>
     <main
-      class="grid grid-cols-2 md:grid-cols-4 w-full lg:w-[800px] mx-auto pt-20"
+      class="grid grid-cols-2 md:grid-cols-4 w-full lg:w-[800px] mx-auto px-10 pt-10 lg:pt-20"
     >
       <div
         v-for="(door, index) in calendar?.tracks"
@@ -16,30 +16,30 @@
         class="group"
       >
         <ClientOnly>
-          <article
+          <div
             tabindex="0"
             class="relative w-full h-full aspect-square [perspective:850px] z-[666] hover:z-[999]"
             @click="openDoor(index, door.spotifyTrackID)"
             @keydown.space.prevent="openDoor(index, door.spotifyTrackID)"
           >
-            <!-- door cover -->
+            <!-- front door -->
             <div
               class="w-full h-full rounded-2xl will-change-transform relative bg-cover [transform-style:preserve-3d] origin-[0] [perspective:850px] transition-all duration-1000 ease-out cursor-pointer"
-              :class="isOpened(index) ? 'present__open' : ''"
+              :class="isOpened(index) ? 'door__open' : ''"
               :style="{
                 backgroundImage: `url(/assets/doors/${theme}/${index + 1}.png)`,
               }"
             />
             <!-- door content -->
-            <div class="present__content rounded-3xl w-full h-full">
-              <!-- Cover -->
+            <div class="absolute top-0 left-0 -z-[1] rounded-3xl w-full h-full">
+              <!-- cover image -->
               <img
                 v-if="isOpened(index)"
                 :src="!isPlaceHolder(door) ? door.coverUrls[0] : '/cover.jpg'"
                 :alt="`${door.trackName} cover art`"
                 class="rounded-3xl"
               />
-              <!-- Play/Pause button & spotify link-->
+              <!-- play/pause button & spotify link-->
               <div
                 class="opacity-100 md:group-hover:opacity-100 md:group-focus-within:opacity-100 transform-multiple duration-500 ease-in-out cursor-pointer fill-white"
                 :class="[
@@ -48,6 +48,7 @@
                     : 'opacity-100 md:opacity-0',
                 ]"
               >
+                <!-- play button -->
                 <img
                   v-if="door.previewUrl"
                   tabindex="0"
@@ -58,6 +59,7 @@
                   class="bg-neutral-500 bg-opacity-80 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-full p-4 w-14 h-14 border-2"
                   role="button"
                 />
+                <!-- link to spotify -->
                 <section>
                   <NuxtLink
                     v-if="isOpened(index) && !isPlaceHolder(door)"
@@ -71,6 +73,7 @@
                     />
                   </NuxtLink>
                 </section>
+                <!-- song name & artist -->
                 <section
                   v-if="isOpened(index) && door.artistName && door.trackName"
                   class="absolute bottom-0 rounded-bl-2xl cursor-default"
@@ -87,7 +90,7 @@
                 </section>
               </div>
             </div>
-          </article>
+          </div>
           <!-- Song preview -->
           <audio
             v-if="isOpened(index) && door.previewUrl"
@@ -197,24 +200,10 @@ function currentlyPlaying(door: { spotifyTrackID: string }) {
 </script>
 
 <style>
-.present__open {
+.door__open {
   transform: rotateY(-84deg);
   perspective-origin: 0;
   backface-visibility: hidden;
   transition: all 0.5s ease-in;
-}
-
-.present__content {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  z-index: -1;
-}
-
-h1 {
-  font-family: 'Zodiak-Variable';
-  font-size: calc(35px + 5vh);
 }
 </style>
