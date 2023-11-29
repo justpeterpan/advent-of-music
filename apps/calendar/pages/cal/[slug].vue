@@ -62,17 +62,17 @@
                 />
                 <!-- link to spotify -->
                 <section>
-                  <NuxtLink
+                  <div
                     v-if="isOpened(index) && !isPlaceHolder(door)"
-                    :to="`https://open.spotify.com/track/${door.spotifyTrackID}`"
-                    class="absolute w-10 h-10 top-0 right-0 bg-gradient-to-tr from-transparent to-indigo-500 from-50% to-50% p-10 rounded-tr-2xl"
+                    class="absolute w-10 h-10 top-0 right-0 bg-gradient-to-tr from-transparent cursor-default to-indigo-500 from-50% to-50% p-10 rounded-tr-2xl"
                   >
-                    <img
-                      :src="OpenIcon"
-                      alt="open icon"
+                    <NuxtLink
+                      :to="`https://open.spotify.com/track/${door.spotifyTrackID}`"
                       class="absolute w-8 h-8 top-0 right-0 m-2"
-                    />
-                  </NuxtLink>
+                    >
+                      <img :src="OpenIcon" alt="open icon" />
+                    </NuxtLink>
+                  </div>
                 </section>
                 <!-- song name & artist -->
                 <section
