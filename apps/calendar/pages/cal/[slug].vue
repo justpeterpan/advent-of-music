@@ -77,7 +77,7 @@
                 <!-- song name & artist -->
                 <section
                   v-if="isOpened(index) && door.artistName && door.trackName"
-                  class="absolute bottom-0 rounded-bl-2xl cursor-default"
+                  class="absolute bottom-0 cursor-default max-w-full"
                 >
                   <BaseLabel
                     tabindex="0"
@@ -210,5 +210,11 @@ function currentlyPlaying(door: { spotifyTrackID: string }) {
   perspective-origin: 0;
   backface-visibility: hidden;
   transition: all 0.5s ease-in;
+}
+
+@media (max-width: 435px) {
+  .door__open {
+    transform: rotateY(-88deg);
+  }
 }
 </style>
