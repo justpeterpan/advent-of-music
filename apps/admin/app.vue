@@ -161,18 +161,24 @@ function touchPlaylistName() {
             class="p-2 hover:bg-[#E5E7EB] hover:text-black hover:transition-all hover:duration-500 rounded-l-sm"
           >
             <NuxtLink
-              :to="`https://advent-of-music-calendar.vercel.app/cal/${slugifyString(
-                playlistName
-              )}-${playlistId?.slice(0, 4)}?t=${selectedTheme}`"
+              :to="`${
+                useRuntimeConfig().public.calendarBaseUrl
+              }/cal/${slugifyString(playlistName)}-${playlistId?.slice(
+                0,
+                4
+              )}?t=${selectedTheme}`"
               >Go to calendar</NuxtLink
             >
           </div>
           <div
             @click="
               copy(
-                `https://advent-of-music-calendar.vercel.app/cal/${slugifyString(
-                  playlistName
-                )}-${playlistId?.slice(0, 4)}?t=${selectedTheme}`
+                `${
+                  useRuntimeConfig().public.calendarBaseUrl
+                }/cal/${slugifyString(playlistName)}-${playlistId?.slice(
+                  0,
+                  4
+                )}?t=${selectedTheme}`
               )
             "
             class="p-2 hover:bg-[#E5E7EB] hover:text-black hover:transition-all hover:duration-500 rounded-r-sm"
