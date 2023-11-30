@@ -142,7 +142,7 @@ function touchPlaylistName() {
             'pointer-events-none text-gray-800 border-gray-800': !playlistId,
           }"
         >
-          Submit
+          Create calendar
         </button>
       </form>
       <div>
