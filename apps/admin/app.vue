@@ -8,7 +8,7 @@ const playlistNameTouched = ref(false)
 const error = ref(false)
 const loading = ref(false)
 const playlistItems = ref()
-const selectedTheme = ref('dark')
+const selectedTheme = ref('cats')
 const showModal = ref(false)
 const snow = ref(false)
 
@@ -101,7 +101,7 @@ function touchPlaylistName() {
         class="grid grid-cols-1 mb-2 max-w-xs w-80"
       >
         <label for="playlist-id" class="text-xs font-extralight"
-          >Playlist Link</label
+          >Playlist Link <span class="text-green-300">(required)</span></label
         >
         <input
           type="text"
@@ -112,7 +112,7 @@ function touchPlaylistName() {
           :class="{ 'ring-rose-500': error }"
         />
         <label for="playlist-name" class="text-xs font-extralight"
-          >Calendar Title</label
+          >Calendar Title <span class="text-green-300">(required)</span></label
         >
         <input
           type="text"
