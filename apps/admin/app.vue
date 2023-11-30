@@ -9,6 +9,14 @@ const error = ref(false)
 const loading = ref(false)
 const playlistItems = ref()
 const selectedTheme = ref('dark')
+const showModal = ref(false)
+const snow = ref(false)
+
+useHead({
+  bodyAttrs: {
+    class: 'bg-neutral-950',
+  },
+})
 
 async function submitPlaylistId() {
   const validPlaylistId = extractSpotifyPlaylistId(playlistId.value)
@@ -62,26 +70,49 @@ function touchPlaylistName() {
 </script>
 
 <template>
+  <TheSnowfall v-if="snow" />
   <div class="min-h-[100svh] flex flex-col bg-black text-white bg">
+    <Teleport to="body">
+      <!-- use the modal component, pass in the prop -->
+      <TheModal :show="showModal" @close="showModal = false">
+        <template #header>
+          <h3>custom header</h3>
+        </template>
+      </TheModal>
+    </Teleport>
     <div class="flex flex-grow flex-col mx-auto justify-center p-2">
+      <h1 class="mb-5 text-4xl underline decoration-dotted">
+        Advent of music 🎄
+      </h1>
+      <label class="container flex gap-4 mb-5">
+        <input type="checkbox" id="snow" name="snow" v-model="snow" />
+        <svg viewBox="0 0 64 64" height="12px" width="12px" class="mt-[2px]">
+          <path
+            d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+            pathLength="575.0541381835938"
+            class="path"
+          ></path>
+        </svg>
+        <div class="text-xs font-light">Let it snow</div>
+      </label>
       <form
         @submit.prevent="submitPlaylistId"
         method="post"
         class="grid grid-cols-1 mb-2 max-w-xs w-80"
       >
         <label for="playlist-id" class="text-xs font-extralight"
-          >Playlist ID</label
+          >Playlist Link</label
         >
         <input
           type="text"
           id="playlist-id"
           v-model="playlistId"
           required
-          class="rounded-md p-2 my-2 border-2 border-black shadow-black ring-2 ring-white text-black"
+          class="rounded-md p-2 mt-2 mb-8 border-2 border-black shadow-black ring-2 ring-white text-black"
           :class="{ 'ring-rose-500': error }"
         />
         <label for="playlist-name" class="text-xs font-extralight"
-          >Calendar Name</label
+          >Calendar Title</label
         >
         <input
           type="text"
@@ -89,7 +120,7 @@ function touchPlaylistName() {
           v-model="playlistName"
           @input="touchPlaylistName"
           required
-          class="rounded-md p-2 my-2 border-2 border-black shadow-black ring-2 ring-white text-black"
+          class="rounded-md p-2 mt-2 mb-8 border-2 border-black shadow-black ring-2 ring-white text-black"
           :class="{
             'ring-rose-500': !isValidPlaylistName && playlistNameTouched,
           }"
@@ -150,6 +181,13 @@ function touchPlaylistName() {
           </div>
         </div>
       </div>
+      <button
+        id="show-modal"
+        @click="showModal = true"
+        class="border-2 rounded-md p-2 hover:bg-white hover:text-black hover:transition-all hover:duration-500 text-center mt-4"
+      >
+        How it works
+      </button>
     </div>
   </div>
 </template>
@@ -164,5 +202,42 @@ function touchPlaylistName() {
   left: 0;
   right: 0;
   overflow: hidden;
+}
+
+.modal {
+  position: fixed;
+  z-index: 999;
+  top: 20%;
+  left: 50%;
+  width: 300px;
+  margin-left: -150px;
+}
+
+.container {
+  cursor: pointer;
+}
+
+.container input {
+  display: none;
+}
+
+.container svg {
+  overflow: visible;
+}
+
+.path {
+  fill: none;
+  stroke: white;
+  stroke-width: 10;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke-dasharray 0.5s ease, stroke-dashoffset 0.5s ease;
+  stroke-dasharray: 241 9999999;
+  stroke-dashoffset: 0;
+}
+
+.container input:checked ~ svg .path {
+  stroke-dasharray: 70.5096664428711 9999999;
+  stroke-dashoffset: -262.2723388671875;
 }
 </style>

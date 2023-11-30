@@ -1,35 +1,31 @@
 <template>
   <div class="grid grid-cols-2 gap-2">
     <label
-      for="dark"
-      class="rounded-lg overflow-hidden focus-within:ring-4 focus-within:ring-blue-600 cursor-pointer"
-      :class="[
-        selected === 'dark' ? 'ring-4 ring-blue-600' : 'ring-1 ring-white',
-      ]"
+      for="cats"
+      class="rounded-2xl overflow-hidden focus-within:ring-4 focus-within:ring-blue-600 cursor-pointer"
+      :class="[selected === 'cats' ? 'ring-4 ring-blue-600' : null]"
     >
-      <img :src="`dark.jpg`" alt="" class="object-cover rounded-md" />
+      <img :src="`cats.png`" alt="" class="object-cover" />
       <input
         type="radio"
-        id="dark"
+        id="cats"
         class="absolute w-0 h-0 p-0 overflow-hidden border-none whitespace-nowrap"
         v-model="selected"
-        value="dark"
+        value="cats"
       />
     </label>
     <label
-      for="light"
-      class="rounded-lg overflow-hidden focus-within:ring-4 focus-within:ring-blue-600 cursor-pointer"
-      :class="[
-        selected === 'light' ? 'ring-4 ring-blue-600' : 'ring-1 ring-white',
-      ]"
+      for="flat"
+      class="rounded-2xl overflow-hidden focus-within:ring-4 focus-within:ring-blue-600 cursor-pointer"
+      :class="[selected === 'flat' ? 'ring-4 ring-blue-600' : null]"
     >
-      <img :src="`light.jpg`" alt="" class="object-cover rounded-md" />
+      <img :src="`flat.png`" alt="" class="object-cover rounded-lg" />
       <input
         type="radio"
-        id="light"
+        id="flat"
         class="absolute w-0 h-0 p-0 overflow-hidden border-none whitespace-nowrap"
         v-model="selected"
-        value="light"
+        value="flat"
       />
     </label>
   </div>
