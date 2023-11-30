@@ -2,8 +2,8 @@
   <div class="grid grid-cols-2 gap-2">
     <label
       for="cats"
-      class="rounded-2xl overflow-hidden focus-within:ring-4 focus-within:ring-blue-600 cursor-pointer"
-      :class="[selected === 'cats' ? 'ring-4 ring-blue-600' : null]"
+      class="rounded-2xl overflow-hidden focus-within:ring-4 focus-within:ring-green-300 cursor-pointer"
+      :class="[selected === 'cats' ? 'ring-4 ring-green-300' : null]"
     >
       <img :src="`cats.png`" alt="" class="object-cover" />
       <input
@@ -16,8 +16,8 @@
     </label>
     <label
       for="flat"
-      class="rounded-2xl overflow-hidden focus-within:ring-4 focus-within:ring-blue-600 cursor-pointer"
-      :class="[selected === 'flat' ? 'ring-4 ring-blue-600' : null]"
+      class="rounded-2xl overflow-hidden focus-within:ring-4 focus-within:ring-green-300 cursor-pointer"
+      :class="[selected === 'flat' ? 'ring-4 ring-green-300' : null]"
     >
       <img :src="`flat.png`" alt="" class="object-cover rounded-lg" />
       <input
