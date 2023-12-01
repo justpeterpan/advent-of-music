@@ -1,7 +1,7 @@
 <template>
   <div v-if="typeof calendar !== 'string'">
     <h1
-      class="lg:absolute lg:-left-3 lg:[writing-mode:vertical-rl] text-[#F2EDE4] pt-10 lg:pt-20 font-[600] px-10 lg:px-0 [font-family:'Zodiak-Variable',serif] lg:text-8xl text-6xl"
+      class="lg:absolute lg:-left-3 lg:[writing-mode:vertical-rl] text-[#F2EDE4] pt-10 lg:pt-20 font-[600] px-10 lg:px-0 [font-family:'Zodiak-Variable',serif]"
     >
       {{
         calendar?.calendarName ? calendar?.calendarName : 'Advent of music 🎄'
@@ -24,8 +24,11 @@
           >
             <!-- front door -->
             <div
-              class="w-full h-full rounded-2xl will-change-transform relative bg-cover [transform-style:preserve-3d] origin-[0] [perspective:850px] transition-all duration-1000 ease-out cursor-pointer"
-              :class="isOpened(index) ? 'door__open' : ''"
+              class="w-full h-full rounded-2xl will-change-transform relative bg-cover [transform-style:preserve-3d] origin-[0] [perspective:850px] transition-all duration-1000 ease-out"
+              :class="[
+                isOpened(index) ? 'door__open' : null,
+                isPlaceHolder(door) ? 'cursor-default' : 'cursor-pointer',
+              ]"
               :style="{
                 backgroundImage: `url(/doors/${theme}/${index + 1}.png)`,
               }"
@@ -69,6 +72,7 @@
                     <NuxtLink
                       :to="`https://open.spotify.com/track/${door.spotifyTrackID}`"
                       class="absolute w-8 h-8 top-0 right-0 m-2"
+                      target="_blank"
                     >
                       <img :src="OpenIcon" alt="open icon" />
                     </NuxtLink>
@@ -114,6 +118,12 @@ import PauseIcon from '~/assets/icons/pause.svg'
 import OpenIcon from '~/assets/icons/open.svg'
 import { useStorage } from '@vueuse/core'
 import '~/assets/fonts/zodiak.css'
+
+useHead({
+  bodyAttrs: {
+    class: 'bg-neutral-950',
+  },
+})
 
 const route = useRoute()
 
@@ -215,6 +225,18 @@ function currentlyPlaying(door: { spotifyTrackID: string }) {
 @media (max-width: 435px) {
   .door__open {
     transform: rotateY(-88deg);
+  }
+}
+
+@media (max-width: 1024px) {
+  h1 {
+    font-size: clamp(1rem, 7vw, 80px);
+  }
+}
+
+@media (min-width: 1024px) {
+  h1 {
+    font-size: clamp(10px, 5vh + 1rem, 80px);
   }
 }
 </style>

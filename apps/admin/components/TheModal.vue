@@ -24,7 +24,7 @@ const props = defineProps({
               playlist field
             </li>
             <li>
-              <strong class="text-yellow-300">4. </strong>Give calendar a title.
+              <strong class="text-yellow-300">4. </strong>Give calendar a title
             </li>
             <li><strong class="text-orange-300">5. </strong>Create calendar</li>
             <li>

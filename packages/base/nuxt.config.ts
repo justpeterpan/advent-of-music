@@ -4,18 +4,17 @@ export default defineNuxtConfig({
   modules: ["@nuxtjs/supabase", "@nuxtjs/tailwindcss", "@vueuse/nuxt"],
   supabase: {
     redirect: false,
+    redirectOptions: {
+      login: "/login",
+      callback: "/callback",
+      exclude: ["/", "cal/*", "cals/*"],
+    },
   },
   nitro: {
     preset: "vercel",
     compressPublicAssets: {
       brotli: true,
       gzip: false,
-    },
-  },
-  runtimeConfig: {
-    supabase: {
-      key: process.env.SUPABASE_KEY,
-      url: process.env.SUPABASE_URL,
     },
   },
 });
