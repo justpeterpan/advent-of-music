@@ -1,13 +1,19 @@
 {
   "name": "musical-advent",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "App for Musical Advent Calendar",
   "scripts": {
     "build": "pnpm -r build",
     "dev": "pnpm -r dev"
   },
-  "keywords": [],
+  "keywords": [
+    "nuxt",
+    "nuxt 3",
+    "nuxt3",
+    "nuxt layers",
+    "supabase",
+    "tailwindcss"
+  ],
   "author": "",
   "license": "ISC",
   "devDependencies": {
