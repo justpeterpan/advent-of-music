@@ -2,6 +2,7 @@
 
 Ever wanted to accompany your friends with some music during christmas time? Well, now you can!  
 [Live](https://create.adventofmusic.app)
+![Create a playlist](./create.jpeg)
 
 ## Requirements
 
