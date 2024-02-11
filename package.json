@@ -18,12 +18,8 @@
   "license": "ISC",
   "devDependencies": {
     "@changesets/cli": "^2.27.1",
-    "@nuxtjs/supabase": "^1.1.4",
     "@nuxtjs/tailwindcss": "^6.10.1",
     "nuxt": "^3.8.2"
-  },
-  "dependencies": {
-    "valibot": "^0.23.0"
   },
   "pnpm": {
     "overrides": {
