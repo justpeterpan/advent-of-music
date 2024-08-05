@@ -19,7 +19,7 @@
   "devDependencies": {
     "@changesets/cli": "^2.27.1",
     "@nuxtjs/tailwindcss": "^6.11.4",
-    "nuxt": "^3.10.1"
+    "nuxt": "^3.12.4"
   },
   "pnpm": {
     "overrides": {
